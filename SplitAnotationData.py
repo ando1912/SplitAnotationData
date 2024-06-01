@@ -58,11 +58,16 @@ class SplitTrainData:
             l = [x.rstrip("\n") for x in f.readlines()]
             # print(l)
         
-        with open(f"{self.save_path}/model.yaml", mode="w") as f:
+        with open(f"{self.save_path}/data.yaml", mode="w") as f:
+            f.write("# Directory path of Images\n")
             f.write("train: ./train\n")
             f.write("val: ./val\n")
             f.write("test: ./test\n")
+            
+            f.write("# Number of class\n")
             f.write(f"nc: {len(l)}\n")
+            
+            f.write("# Class names\n")
             f.write(f"names: {l}\n")
             
 
