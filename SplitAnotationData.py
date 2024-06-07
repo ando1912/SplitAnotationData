@@ -12,6 +12,8 @@ class SplitTrainData:
         self.dir_path = args.dir_path
         self.save_path = args.save_path
         
+        self.flag_rename = args.rename
+        
         # 分割割合
         self.rates = {
             "train":args.trainrate,
@@ -56,10 +58,16 @@ class SplitTrainData:
         for key, val in datas.items():
             for i, basename in enumerate(val):
                 # 画像のコピー
-                shutil.copy(f"{self.dir_path}/{basename}.{self.ext}", f"{self.save_path}/{key}/{key}_{i}.{self.ext}")
+                if self.flag_rename:
+                    shutil.copy(f"{self.dir_path}/{basename}.{self.ext}", f"{self.save_path}/{key}/{key}_{i}.{self.ext}")
+                else:
+                    shutil.copy(f"{self.dir_path}/{basename}.{self.ext}", f"{self.save_path}/{key}/{basename}.{self.ext}")
                 # アノテーションデータのコピー
                 if os.path.isfile(f"{self.dir_path}/{basename}.txt"):
-                    shutil.copy(f"{self.dir_path}/{basename}.txt", f"{self.save_path}/{key}/{key}_{i}.txt")
+                    if self.flag_rename:
+                        shutil.copy(f"{self.dir_path}/{basename}.txt", f"{self.save_path}/{key}/{key}_{i}.txt")
+                    else:
+                        shutil.copy(f"{self.dir_path}/{basename}.txt", f"{self.save_path}/{key}/{basename}.txt")
                 # print(f"({data} => {self.save_path}/{key}/{key}_{i}.{self.ext}")
             shutil.copy(f"{self.dir_path}/classes.txt", f"{self.save_path}/{key}/classes.txt")
         
@@ -137,7 +145,7 @@ if __name__=="__main__":
                             os.path.dirname(os.path.abspath(__file__)),
                             f"results/{now.strftime('%y%m%d_%H%M%S')}")
                         )
-    
+    parser.add_argument("--rename", action="store_true")
     parser.add_argument("-train", "--trainrate", default=0.7)
     parser.add_argument("-val", "--valrate", default=0.1)
     parser.add_argument("-test", "--testrate", default=0.2)
